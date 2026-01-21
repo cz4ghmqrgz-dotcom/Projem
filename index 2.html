@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Arial', sans-serif; }
+  body { height: 100vh; width: 100vw; overflow: hidden; background: #000; }
+
+  /* EKRAN SALLANMA */
+  .shake { animation: shakeAnim 0.5s ease-in-out; }
+  @keyframes shakeAnim {
+    0%, 100% { transform: translate(0,0); }
+    20% { transform: translate(-10px, 10px); }
+    40% { transform: translate(10px, -10px); }
+    60% { transform: translate(-10px, -10px); }
+    80% { transform: translate(10px, 10px); }
+  }
+
+  /* 1. EKRAN (VİDEO YERİNE GÖRSEL) */
+  #startPage { 
+    position: fixed; inset: 0; z-index: 10; 
+    display: flex; justify-content: center; align-items: center;
+    /* Buraya estetik bir arka plan görseli koydum */
+    background: url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2070&auto=format&fit=crop') no-repeat center center;
+    background-size: cover;
+  }
+  .overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); } /* Yazıların okunması için karartma */
+  
+  .start-content { position: relative; z-index: 11; text-align: center; color: white; }
+  #flowerBtn { font-size: 80px; background: none; border: none; cursor: pointer; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+  /* 2. EKRAN VE DİĞER HER ŞEY AYNI KALIYOR */
+  #messagePage {
+    display: none; position: fixed; inset: 0;
+    background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #ffd1ff, #feb47b);
+    background-size: 400% 400%; animation: gradientBG 8s ease infinite;
+    justify-content: center; align-items: center; overflow: hidden;
+  }
+  @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+  .moving-text {
+    position: absolute; width: 100%; font-size: 22px;
+    font-weight: bold; color: rgba(255, 255, 255, 0.4);
+    white-space: nowrap; pointer-events: none; z-index: 0;
+  }
+  .top-text { top: 8%; animation: moveLeft 12s linear infinite; }
+  .bottom-text { bottom: 8%; animation: moveRight 12s linear infinite; }
+  @keyframes moveLeft { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+  @keyframes moveRight { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+
+  .container { position: relative; width: 300px; height: 300px; display: flex; justify-content: center; align-items: center; z-index: 5; }
+  .heart {
+    position: absolute; width: 230px; height: 230px; background: #ff4d6d;
+    transform: rotate(-45deg); box-shadow: 0 0 30px rgba(255, 77, 109, 0.4);
+  }
+  .heart::before, .heart::after { content: ""; width: 230px; height: 230px; background: #ff4d6d; border-radius: 50%; position: absolute; }
+  .heart::before { top: -115px; left: 0; }
+  .heart::after { left: 115px; top: 0; }
+
+  .scroll-text {
+    position: relative; z-index: 6; width: 210px; max-height: 220px; 
+    overflow-y: auto; color: white; text-align: center;
+    font-size: 15px; line-height: 1.6; font-weight: bold;
+    padding: 35px 10px 10px 10px; scrollbar-width: none;
+  }
+  .scroll-text::-webkit-scrollbar { display: none; }
+
+  .floating-heart {
+    position: absolute; z-index: 1; pointer-events: none;
+    animation: floatMove 5s linear infinite;
+  }
+  @keyframes floatMove {
+    0% { transform: translate(0, 0) scale(1.2); opacity: 0; }
+    20% { opacity: 1; }
+    100% { transform: translate(var(--x), var(--y)) scale(0.5); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div id="startPage">
+  <div class="overlay"></div>
+  <div class="start-content">
+    <h1>Bal böceğim 🌸<br>En sevdiğin çiçeğe bas</h1>
+    <button id="flowerBtn">🌸</button>
+  </div>
+</div>
+
+<div id="messagePage">
+  <div class="moving-text top-text">SENİ SEVİYORUM ❤️ SENİ SEVİYORUM ❤️ SENİ SEVİYORUM ❤️</div>
+  <div class="moving-text bottom-text">SENİ SEVİYORUM ❤️ SENİ SEVİYORUM ❤️ SENİ SEVİYORUM ❤️</div>
+
+  <div class="container">
+    <div class="heart"></div>
+    <div class="scroll-text">
+      🌸 Hayatım, ömrüm benim... ❤️<br><br>
+      Seni çok seviyorum, iyi ki varsın. ✨<br><br>
+      Bu bizim tam 100. günümüz. 🧸<br><br>
+      Başkalarının ne dediği umrumda değil, biz birbirimize yeteriz. 💖<br><br>
+      Lütfen bu sadece "ergenlik aşkımız" olarak kalmasın... 🌸<br><br>
+      Seni çok seviyorum hayat arkadaşım. ❤️
+    </div>
+  </div>
+</div>
+
+<script>
+const btn = document.getElementById("flowerBtn");
+const startPage = document.getElementById("startPage");
+const messagePage = document.getElementById("messagePage");
+
+btn.onclick = () => {
+  document.body.classList.add("shake");
+  setTimeout(() => {
+    startPage.style.display = "none";
+    messagePage.style.display = "flex";
+    document.body.classList.remove("shake");
+    startFloatingHearts();
+  }, 500);
+};
+
+function startFloatingHearts() {
+  const heartTypes = ["❤️", "💖", "💝", "💗", "🖤", "🖤", "💙", "💜", "✨"];
+  setInterval(() => {
+    const h = document.createElement("div");
+    h.className = "floating-heart";
+    h.innerText = heartTypes[Math.floor(Math.random() * heartTypes.length)];
+    h.style.left = "50vw";
+    h.style.top = "50vh";
+    h.style.fontSize = Math.random() * 20 + 20 + "px";
+    
+    const x = (Math.random() - 0.5) * 450 + "px";
+    const y = (Math.random() - 0.5) * 850 + "px";
+    h.style.setProperty('--x', x);
+    h.style.setProperty('--y', y);
+    
+    messagePage.appendChild(h);
+    setTimeout(() => h.remove(), 5000);
+  }, 250);
+}
+</script>
+</body>
+</html>
+  
